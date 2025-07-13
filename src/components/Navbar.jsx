@@ -14,7 +14,7 @@ const Navbar = () => {
                 <NavLink to='/' className={({ isActive }) => `py-1 ${isActive ? 'border-b-2 border-blue-500 text-blue-500' : 'hover:text-blue-500'}`}>
                     <li>Home</li>
                 </NavLink>
-                <NavLink to='/doctors' className={({ isActive }) => `py-1 ${isActive ? 'border-b-2 border-blue-500 text-blue-500' : 'hover:text-blue-500'}`}>
+                <NavLink to='/doctor' className={({ isActive }) => `py-1 ${isActive ? 'border-b-2 border-blue-500 text-blue-500' : 'hover:text-blue-500'}`}>
                     <li>All Doctor</li>
                 </NavLink>
                 <NavLink to='/about' className={({ isActive }) => `py-1 ${isActive ? 'border-b-2 border-blue-500 text-blue-500' : 'hover:text-blue-500'}`}>
