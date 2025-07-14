@@ -11,3 +11,9 @@
 ::-webkit-scrollbar{
     @apply  hidden
 }
+
+@media(max-width:740ox){
+    .active p{
+        @apply text-white bg-blue-600
+    } 
+}
