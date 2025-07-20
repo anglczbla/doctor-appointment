@@ -70,7 +70,7 @@ const loginAdmin = async (req,res) =>{
 
 
         }else{
-            req.json({success:false, message:"invalid credentials"})
+            res.json({success:false, message:"invalid credentials"})
         }
         
     } catch (error) {
@@ -80,4 +80,20 @@ const loginAdmin = async (req,res) =>{
     }
 }
 
-export {addDoctor, loginAdmin}
+// api to get all doctor list for admin
+
+const allDoctor = async (req,res) =>{
+    try {
+        const doctors = await doctorModel.find({}).select('-password') // exclude password
+        res.json({success:true, doctors})
+        
+
+    } catch (error) {
+        console.log(error)
+        res.json({success:false, message:error.message})
+        
+    }
+}
+
+
+export {addDoctor, loginAdmin, allDoctor}
