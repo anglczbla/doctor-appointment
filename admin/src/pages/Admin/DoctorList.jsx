@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { AdminContext } from '../../context/AdminContext'
 
 const DoctorList = () => {
-  const { doctors, aToken, getAllDoctors } = useContext(AdminContext)
+  const { doctors, aToken, getAllDoctors, changeAvailability } = useContext(AdminContext)
 
   useEffect(() => {
     
@@ -21,7 +21,7 @@ const DoctorList = () => {
           doctors.map((item, index) => (
             <div className="border border-indigo-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group" key={index}>
               <img 
-                className="bg-indigo-50 group-hover:bg-primary transition-all duration-500" 
+                className="bg-indigo-50 group-hover:bg-blue-500 transition-all duration-500" 
                 src={item.image} 
                 alt={item.name}
               />
@@ -32,7 +32,7 @@ const DoctorList = () => {
                   <input 
                     type="checkbox" 
                     checked={item.available}
-                    onChange={() => console.log('Toggle availability')}
+                    onChange={() => changeAvailability(item._id)}
                   />
                   <p>Available</p>
                 </div>
