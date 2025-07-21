@@ -1,5 +1,6 @@
 import doctorModel from "../models/doctorModel.js"
 
+
 const changeAvailability =async (req,res) =>{
     try {
         
