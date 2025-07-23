@@ -271,4 +271,16 @@ const cancelAppointment = async (req,res)=>{
   }
 }
 
+
+// midtrans integration for payment
+
+
+// api to verify payment
+const verifyPayment = async (req,res) =>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
 export { registerUser, loginUser, getProfile, updateProfile, bookAppointment,listAppointment, cancelAppointment};
