@@ -2,16 +2,20 @@ import React from 'react'
 import { useContext } from 'react'
 import { AdminContext } from '../../context/AdminContext'
 import { useEffect } from 'react'
+import { AppContext } from '../../context/AppContext'
+import { assets } from '../../assets/assets'
 
 const AllAppointment = () => {
 
-  const {aToken, appointments, getAllAppointments} = useContext(AdminContext)
+  const {aToken, appointments, getAllAppointments, cancelAppointment} = useContext(AdminContext)
+  const {calculateAge} = useContext(AppContext)
 
   useEffect (()=>{
     if (aToken) {
       getAllAppointments()
     }
   },[aToken])
+
 
   return (
     <div className="w-full max-w-6xl m-5">
@@ -22,11 +26,12 @@ const AllAppointment = () => {
         <div className="grid grid-cols-[0.5fr_2fr_2fr_1fr_2fr_2fr_1fr] py-3 px-6 border-b bg-gray-50 text-sm font-medium text-gray-700">
           <p>#</p>
           <p>Patient</p>
-          <p>Department</p>
           <p>Age</p>
           <p>Date & Time</p>
           <p>Doctor</p>
           <p>Fees</p>
+          <p>Action</p>
+
         </div>
 
         {/* Dynamic appointments data when available */}
@@ -39,8 +44,7 @@ const AllAppointment = () => {
               <p>{item.userData?.name || 'Patient Name'}</p>
             </div>
             
-            <p>{item.department || item.userData?.name || 'Department'}</p>
-            <p>{item.userData?.age || 'N/A'}</p>
+            <p>{calculateAge(item.userData.dob)}</p>
             <p>{item.slotDate}, {item.slotTime}</p>
             
             <div className="flex items-center gap-2">
@@ -49,6 +53,11 @@ const AllAppointment = () => {
             </div>
             
             <p>${item.amount || 0}</p>
+            {item.cancelled 
+            ?
+            <p className='text-red-400 text-xs font-medium'>Cancelled</p>
+            : <img onClick={()=>cancelAppointment(item._id)}className='w-10 cursor-pointer'src={assets.cancel_icon} alt="" />
+          }
           </div>
         ))}
 
