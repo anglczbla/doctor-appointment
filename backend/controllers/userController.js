@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import {v2  as cloudinary} from'cloudinary'
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
+import mongoose from 'mongoose';
 
 // api register user
 const registerUser = async (req, res) => {
@@ -178,7 +179,7 @@ const bookAppointment = async(req,res) =>{
     const docData =  await doctorModel.findById(docId).select('-password')
 
     if (!docData.available) {
-      return res.json({succes:false,message:"Doctor not available"})
+      return res.json({success:false,message:"Doctor not available"})
     }
 
     let slots_booked = docData.slots_booked
@@ -186,7 +187,7 @@ const bookAppointment = async(req,res) =>{
     // checking for slot availability
     if (slots_booked[slotDate]) 
       if (slots_booked[slotDate].includes(slotTime)) {
-        return res.json({succes:false,message:"Slot not available"})
+        return res.json({success:false,message:"Slot not available"})
       }else{
       slots_booked[slotDate].push(slotTime)
     } else{
