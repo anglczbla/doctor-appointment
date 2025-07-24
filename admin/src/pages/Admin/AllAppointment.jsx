@@ -21,9 +21,9 @@ const AllAppointment = () => {
     <div className="w-full max-w-6xl m-5">
       <p className="mb-3 text-lg font-medium">All Appointments</p>
       
-      <div className="bg-white border rounded text-sm max-h-[80vh] min-h-[60vh] overflow-y-scroll">
+      <div className="bg-white border-b border-gray-100 rounded text-sm max-h-[80vh] min-h-[60vh] overflow-y-scroll">
         {/* Header */}
-        <div className="grid grid-cols-[0.5fr_2fr_2fr_1fr_2fr_2fr_1fr] py-3 px-6 border-b bg-gray-50 text-sm font-medium text-gray-700">
+        <div className="grid grid-cols-[0.5fr_2fr_2fr_1fr_2fr_2fr_1fr] py-3 px-6 border-b border-gray-100 bg-gray-50 text-sm font-medium text-gray-700">
           <p>#</p>
           <p>Patient</p>
           <p>Age</p>
@@ -36,7 +36,7 @@ const AllAppointment = () => {
 
         {/* Dynamic appointments data when available */}
         {appointments && appointments.map((item, index) => (
-          <div className="grid grid-cols-[0.5fr_2fr_2fr_1fr_2fr_2fr_1fr] items-center text-gray-600 py-4 px-6 border-b hover:bg-gray-50" key={index}>
+          <div className="grid grid-cols-[0.5fr_2fr_2fr_1fr_2fr_2fr_1fr] items-center text-gray-600 py-4 px-6 border-b border-gray-100 hover:bg-gray-50" key={index}>
             <p>{index + 1}</p>
             
             <div className="flex items-center gap-2">
