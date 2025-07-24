@@ -3,10 +3,12 @@ import { useContext } from "react";
 import { AdminContext } from "../../context/AdminContext";
 import { useEffect } from "react";
 import { assets } from "../../assets/assets";
+import { AppContext } from "../../context/AppContext";
 
 const Dashboard = () => {
-  const { aToken, getDashData, cancelAppointment, dashData } =
-    useContext(AdminContext);
+  const { aToken, getDashData, cancelAppointment, dashData } = useContext(AdminContext);
+
+  const { slotDateFormat } = useContext(AppContext);
 
   useEffect(() => {
     if (aToken) {
@@ -55,20 +57,34 @@ const Dashboard = () => {
             <img className="w-5" src={assets.list_icon} alt="" />
             <p className="font-semibold">Latest Bookings</p>
           </div>
-          
+
           <div className="pt-4 pb-4">
-            {dashData.latestAppointment && dashData.latestAppointment.length > 0 ? (
+            {dashData.latestAppointment &&
+            dashData.latestAppointment.length > 0 ? (
               dashData.latestAppointment.map((item, index) => (
-                <div key={index} className="flex items-center px-6 py-3 gap-3 hover:bg-gray-50">
-                  <img className="w-10 h-10 rounded-full object-cover" src={item.docData.image} alt="" />
+                <div
+                  key={index}
+                  className="flex items-center px-6 py-3 gap-3 hover:bg-gray-50"
+                >
+                  <img
+                    className="w-10 h-10 rounded-full object-cover"
+                    src={item.docData.image}
+                    alt=""
+                  />
                   <div className="flex-1 text-sm">
-                    <p className="text-gray-800 font-medium">{item.docData.name}</p>
-                    <p className="text-gray-500">{item.slotDate}</p>
+                    <p className="text-gray-800 font-medium">
+                      {item.docData.name}
+                    </p>
+                    <p className="text-gray-500"> {slotDateFormat(item.slotDate)}</p>
                   </div>
                   {item.cancelled ? (
-                    <p className="text-red-400 text-xs font-medium">Cancelled</p>
+                    <p className="text-red-400 text-xs font-medium">
+                      Cancelled
+                    </p>
                   ) : item.isCompleted ? (
-                    <p className="text-green-400 text-xs font-medium">Completed</p>
+                    <p className="text-green-400 text-xs font-medium">
+                      Completed
+                    </p>
                   ) : (
                     <img
                       onClick={() => cancelAppointment(item._id)}

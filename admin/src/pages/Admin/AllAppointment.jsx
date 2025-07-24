@@ -8,7 +8,7 @@ import { assets } from '../../assets/assets'
 const AllAppointment = () => {
 
   const {aToken, appointments, getAllAppointments, cancelAppointment} = useContext(AdminContext)
-  const {calculateAge} = useContext(AppContext)
+  const {calculateAge, slotDateFormat} = useContext(AppContext)
 
   useEffect (()=>{
     if (aToken) {
@@ -45,7 +45,7 @@ const AllAppointment = () => {
             </div>
             
             <p>{calculateAge(item.userData.dob)}</p>
-            <p>{item.slotDate}, {item.slotTime}</p>
+            <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
             
             <div className="flex items-center gap-2">
               <img className="w-8 h-8 rounded-full" src={item.docData?.image || '/api/placeholder/32/32'} alt="" />
