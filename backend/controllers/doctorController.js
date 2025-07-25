@@ -46,7 +46,7 @@ const loginDoctor = async (req,res) =>{
 
         if (isMatch) {
             const token = jwt.sign({id:doctor._id},process.env.JWT_SECRET)
-            res.json({succes:true,token})
+            res.json({success:true,token})
         }else{
             res.json({success:false, message:'invalid login for doctor'})
         }
