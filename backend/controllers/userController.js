@@ -6,6 +6,7 @@ import {v2  as cloudinary} from'cloudinary'
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
 import mongoose from 'mongoose';
+import main from "../config/gemini.js";
 
 // api register user
 const registerUser = async (req, res) => {
@@ -280,6 +281,18 @@ const verifyPayment = async (req,res) =>{
   try {
     
   } catch (error) {
+    
+  }
+}
+
+export const generateContent = async () =>{
+  try {
+    const {prompt}  = req.body;
+    const generateAI = await main(prompt + 'Ask to know recommended specialist regarding your health concern.')
+    res.json({success:true, generateAI})
+    
+  } catch (error) {
+    res.json({success:false, message:error.message })
     
   }
 }
