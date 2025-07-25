@@ -48,9 +48,10 @@ const Doctor = () => {
                 {/* Card Content */}
                 <div className='p-4'>
                   {/* Available Status */}
-                  <div className='flex items-center gap-2 text-sm text-green-500 mb-3'>
-                    <div className='w-2 h-2 bg-green-500 rounded-full'></div>
-                    <p className='font-medium'>Available</p>
+
+                  <div className={`flex items-center gap-2 text-sm ${item.available ? 'text-green-500' : 'text-gray-500'}  mb-2`}>
+                    <p className={`w-2 h-2 ${item.available ? 'bg-green-500' : 'bg-gray-500'}  rounded-full`}></p>
+                    <p>{item.available? 'Available' :'Not Available'}</p>
                   </div>
                   
                   {/* Doctor Name */}
