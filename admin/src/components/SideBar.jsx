@@ -23,7 +23,7 @@ const {dToken} = useContext(DoctorContext)
                 }
             >
                 <img src={assets.home_icon} alt="" className='w-5 h-5' />
-                <p className='font-medium'>Dashboard</p>
+                <p className='hidden md:block font-medium'>Dashboard</p>
             </NavLink>
             
             <NavLink 
@@ -37,7 +37,7 @@ const {dToken} = useContext(DoctorContext)
                 }
             >
                 <img src={assets.appointment_icon} alt="" className='w-5 h-5' />
-                <p className='font-medium'>All Appointment</p>
+                <p className='hidden md:block font-medium'>All Appointment</p>
             </NavLink>
             
             <NavLink 
@@ -51,7 +51,7 @@ const {dToken} = useContext(DoctorContext)
                 }
             >
                 <img src={assets.add_icon} alt="" className='w-5 h-5' />
-                <p className='font-medium'>Add Doctor</p>
+                <p className='hidden md:block font-medium'>Add Doctor</p>
             </NavLink>
             
             <NavLink 
@@ -65,7 +65,7 @@ const {dToken} = useContext(DoctorContext)
                 }
             >
                 <img src={assets.people_icon} alt="" className='w-5 h-5' />
-                <p className='font-medium'>Doctor List</p>
+                <p className='hidden md:block font-medium'>Doctor List</p>
             </NavLink>
 
             </ul>
@@ -83,7 +83,7 @@ const {dToken} = useContext(DoctorContext)
                 }
             >
                 <img src={assets.home_icon} alt="" className='w-5 h-5' />
-                <p className='font-medium'>Dashboard</p>
+                <p className='hidden md:block font-medium'>Dashboard</p>
             </NavLink>
             
             <NavLink 
@@ -97,7 +97,7 @@ const {dToken} = useContext(DoctorContext)
                 }
             >
                 <img src={assets.appointment_icon} alt="" className='w-5 h-5' />
-                <p className='font-medium'>All Appointment</p>
+                <p className='hidden md:block font-medium'>All Appointment</p>
             </NavLink>
             
             <NavLink 
@@ -111,7 +111,7 @@ const {dToken} = useContext(DoctorContext)
                 }
             >
                 <img src={assets.people_icon} alt="" className='w-5 h-5' />
-                <p>Profile</p>
+                <p className='hidden md:block'>Profile</p>
             </NavLink>
             </ul>
             }
