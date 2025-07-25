@@ -15,9 +15,7 @@ const DoctorContextProvider = (props) =>{
         try {
             const {data} = await axios.get(backendUrl + '/api/doctor/appointments',{headers:{dToken}})
             if (data.success) {
-                setAppointments(data.appointments.reverse()) // get the latest appointment in the first position array
-                console.log(data.appointments.reverse());
-                
+                setAppointments(data.appointments) 
             }else{
                 toast.error(data.message)
             }
@@ -27,8 +25,51 @@ const DoctorContextProvider = (props) =>{
         }
     }
 
+    // Function untuk complete appointment
+    const completeAppointment = async (appointmentId) => {
+        try {
+            const { data } = await axios.post(
+                backendUrl + '/api/doctor/complete-appointment', 
+                { appointmentId },
+                { headers: { dToken } }
+            );
+            
+            if (data.success) {
+                toast.success(data.message);
+                getAppointments(); // Refresh data
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.error('Complete appointment error:', error);
+            toast.error('Failed to complete appointment');
+        }
+    };
+
+    // Function untuk cancel appointment
+    const cancelAppointment = async (appointmentId) => {
+        try {
+            const { data } = await axios.post(
+                backendUrl + '/api/doctor/cancel-appointment', 
+                { appointmentId },
+                { headers: { dToken } }
+            );
+            
+            if (data.success) {
+                toast.success(data.message);
+                getAppointments(); // Refresh data
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.error('Cancel appointment error:', error);
+            toast.error('Failed to cancel appointment');
+        }
+    };
+
+
     const value={
-        dToken,setDToken,backendUrl, appointments,setAppointments,getAppointments
+        dToken,setDToken,backendUrl, appointments,setAppointments,getAppointments,cancelAppointment,completeAppointment
 
     }
     return (
