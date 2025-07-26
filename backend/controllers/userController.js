@@ -285,15 +285,20 @@ const verifyPayment = async (req,res) =>{
   }
 }
 
-export const generateContent = async () =>{
+export const generateContent = async (req, res) => {
   try {
-    const {prompt}  = req.body;
-    const generateAI = await main(prompt + 'Ask to know recommended specialist regarding your health concern.')
-    res.json({success:true, generateAI})
+    const { prompt } = req.body;
+    console.log('Received prompt:', prompt); 
+    
+    const generateAI = await main(prompt + ' Ask to know recommended specialist regarding your health concern.');
+    console.log('Generated AI response:', generateAI); 
+    
+    res.json({ success: true, data: generateAI }); 
     
   } catch (error) {
-    res.json({success:false, message:error.message })
-    
+    console.error('Controller error:', error);
+    res.json({ success: false, message: error.message });
   }
 }
+
 export { registerUser, loginUser, getProfile, updateProfile, bookAppointment,listAppointment, cancelAppointment};

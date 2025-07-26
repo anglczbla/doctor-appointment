@@ -22,6 +22,9 @@ const Navbar = () => {
                 <NavLink to='/doctor' className={({ isActive }) => `py-1 ${isActive ? 'border-b-2 border-blue-500 text-blue-500' : 'hover:text-blue-500'}`}>
                     <li>All Doctor</li>
                 </NavLink>
+                <NavLink to='/generate-ai' className={({ isActive }) => `py-1 ${isActive ? 'border-b-2 border-blue-500 text-blue-500' : 'hover:text-blue-500'}`}>
+                    <li>AI 🤖</li>
+                </NavLink>
                 <NavLink to='/about' className={({ isActive }) => `py-1 ${isActive ? 'border-b-2 border-blue-500 text-blue-500' : 'hover:text-blue-500'}`}>
                     <li>About</li>
                 </NavLink>
@@ -57,6 +60,7 @@ const Navbar = () => {
                     <ul className=' flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium '>
                         <NavLink  onClick={()=>setShowMenu(false)} to='/'><p className='px-4 py-2 rounded inline-block'   >Home</p></NavLink>
                         <NavLink  onClick={()=>setShowMenu(false)} to ='/doctor'><p className='px-4 py-2 rounded inline-block'>ALL DOCTORS</p></NavLink>
+                         <NavLink  onClick={()=>setShowMenu(false)} to ='/generate-ai'><p className='px-4 py-2 rounded inline-block'>AI</p></NavLink>
                         <NavLink  onClick={()=>setShowMenu(false)} to ='/about'><p className='px-4 py-2 rounded inline-block'>ABOUT</p></NavLink>
                         <NavLink onClick={()=>setShowMenu(false)} to ='/contact'><p className='px-4 py-2 rounded inline-block'>CONTACT</p></NavLink>
                     </ul>

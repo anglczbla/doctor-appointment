@@ -10,6 +10,7 @@ import MyAppointment from "./pages/MyAppointment";
 import Appointment from "./pages/Appointment";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import GeminiAI from "./pages/GeminiAI";
 import { ToastContainer} from 'react-toastify';
   
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/doctor/:speciality" element={<Doctor />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
+        <Route path="/generate-ai" element={<GeminiAI />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/my-appointment" element={<MyAppointment />} />
