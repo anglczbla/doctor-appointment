@@ -2,10 +2,10 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
-import {v2  as cloudinary} from'cloudinary'
+import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import main from "../config/gemini.js";
 
 // api register user
@@ -69,12 +69,12 @@ const loginUser = async (req, res) => {
 
 // api to get user profile data
 
-const getProfile = async (req,res) => {
+const getProfile = async (req, res) => {
   try {
-    const userId = req.userId
-    const userData = await userModel.findById(userId).select("-password")
+    const userId = req.userId;
+    const userData = await userModel.findById(userId).select("-password");
 
-    res.json({ success: true, userData })
+    res.json({ success: true, userData });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -85,119 +85,114 @@ const getProfile = async (req,res) => {
 
 const updateProfile = async (req, res) => {
   try {
+    const userId = req.userId;
 
-    const userId = req.userId
-    
     if (!userId) {
-      return res.json({ success: false, message: "User ID not found" })
+      return res.json({ success: false, message: "User ID not found" });
     }
-    
-    const { name, phone, address, dob, gender } = req.body
-    const imageFile = req.file
-    
+
+    const { name, phone, address, dob, gender } = req.body;
+    const imageFile = req.file;
+
     // Validasi data required
     if (!name || !phone || !address || !dob || !gender) {
-      return res.json({ success: false, message: "Data Missing" })
+      return res.json({ success: false, message: "Data Missing" });
     }
-  
+
     const updateData = {
       name,
       phone,
       address: JSON.parse(address),
       dob,
-      gender
-    }
-    
-   
+      gender,
+    };
+
     const updatedUser = await userModel.findByIdAndUpdate(
-      userId, 
+      userId,
       updateData,
       { new: true, runValidators: true } // ✅ Return updated doc & run validation
-    )
-    
+    );
+
     if (!updatedUser) {
-      return res.json({ success: false, message: "User not found" })
+      return res.json({ success: false, message: "User not found" });
     }
-  
+
     if (imageFile) {
       try {
-        console.log("Uploading image:", imageFile.path) // ✅ DEBUG LOG
-        
+        console.log("Uploading image:", imageFile.path); // ✅ DEBUG LOG
+
         // FIX 5: Fix cloudinary upload with proper resource_type
         const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
-          resource_type: "image", // 
+          resource_type: "image", //
           folder: "user_profiles",
-          transformation: [
-            { width: 400, height: 400, crop: "fill" }
-          ]
-        })
-        
-        const imageURL = imageUpload.secure_url
-        
+          transformation: [{ width: 400, height: 400, crop: "fill" }],
+        });
+
+        const imageURL = imageUpload.secure_url;
+
         // Update image URL
         const imageUpdatedUser = await userModel.findByIdAndUpdate(
           userId,
           { image: imageURL },
           { new: true }
-        )
-
-        
+        );
       } catch (imageError) {
-        return res.json({ 
-          success: true, 
+        return res.json({
+          success: true,
           message: "Profile updated but image upload failed",
-          error: imageError.message 
-        })
+          error: imageError.message,
+        });
       }
     }
-    
+
     // ✅ SUCCESS RESPONSE
-    res.json({ 
-      success: true, 
-      message: "Profile Updated Successfully"
-    })
-    
+    res.json({
+      success: true,
+      message: "Profile Updated Successfully",
+    });
   } catch (error) {
     console.log("Update profile error:", error);
     res.json({ success: false, message: error.message });
   }
-}
+};
 
 // api to book appointment
-const bookAppointment = async(req,res) =>{
+const bookAppointment = async (req, res) => {
   try {
     const { userId, docId, slotDate, slotTime } = req.body;
     if (!userId || !docId || !slotDate || !slotTime) {
       return res.json({
         success: false,
-        message: "Field wajib (userId, docId, slotDate, slotTime) tidak lengkap",
+        message:
+          "Field wajib (userId, docId, slotDate, slotTime) tidak lengkap",
       });
     }
     // Validasi userId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.json({ success: false, message: "userId tidak valid" });
     }
-    const docData =  await doctorModel.findById(docId).select('-password')
+    const docData = await doctorModel.findById(docId).select("-password");
 
     if (!docData.available) {
-      return res.json({success:false,message:"Doctor not available"})
+      return res.json({ success: false, message: "Doctor not available" });
     }
 
-    let slots_booked = docData.slots_booked
+    let slots_booked = docData.slots_booked;
 
     // checking for slot availability
-    if (slots_booked[slotDate]) 
+    if (slots_booked[slotDate])
       if (slots_booked[slotDate].includes(slotTime)) {
-        return res.json({success:false,message:"Slot not available"})
-      }else{
-      slots_booked[slotDate].push(slotTime)
-    } else{
-      slots_booked[slotDate] =[]
-      slots_booked[slotDate].push(slotTime)
+        return res.json({ success: false, message: "Slot not available" });
+      } else {
+        slots_booked[slotDate].push(slotTime);
+      }
+    else {
+      slots_booked[slotDate] = [];
+      slots_booked[slotDate].push(slotTime);
     }
 
-    const userData  = await userModel.findById(userId).select('-password')
-    delete docData.slots_booked
+    const userData = await userModel.findById(userId).select("-password");
+    delete docData.slots_booked;
 
     const appointmentData = {
       userId,
@@ -205,129 +200,176 @@ const bookAppointment = async(req,res) =>{
       slotDate,
       docData,
       userData,
-      amount:docData.fee,
+      amount: docData.fee,
       slotTime,
-      date: Date.now()
-    }
+      date: Date.now(),
+    };
 
-    const newAppointment = new appointmentModel (appointmentData)
-    await newAppointment.save()
+    const newAppointment = new appointmentModel(appointmentData);
+    await newAppointment.save();
 
     // save new slot data in docData
-    await doctorModel.findByIdAndUpdate(docId,{slots_booked})
-    res.json({success:true,message:"Appointment Booked"})
-  
+    await doctorModel.findByIdAndUpdate(docId, { slots_booked });
+    res.json({ success: true, message: "Appointment Booked" });
   } catch (error) {
     console.log("Update profile error:", error);
     res.json({ success: false, message: error.message });
-    
   }
-}
+};
 
 // api to get user appointment
-const listAppointment = async(req,res) => {
-
+const listAppointment = async (req, res) => {
   try {
-    const userId = req.userId
-    const appointments = await appointmentModel.find({userId})
+    const userId = req.userId;
+    const appointments = await appointmentModel.find({ userId });
 
-    res.json({success:true,appointments})
-    
+    res.json({ success: true, appointments });
   } catch (error) {
     console.log("Update profile error:", error);
     res.json({ success: false, message: error.message });
   }
-
-}
+};
 
 // api to cancel appointment
-const cancelAppointment = async (req,res)=>{
+const cancelAppointment = async (req, res) => {
   try {
-    const userId = req.userId
-    const {appointmentId} = req.body
-    const appointmentData =  await appointmentModel.findById(appointmentId)
+    const userId = req.userId;
+    const { appointmentId } = req.body;
+    const appointmentData = await appointmentModel.findById(appointmentId);
 
     // verify appointment user
     if (appointmentData.userId !== userId) {
-      return res.json({success:false,message:"Unauthorized action"})
+      return res.json({ success: false, message: "Unauthorized action" });
     }
 
-    await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true})
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      cancelled: true,
+    });
 
     // releasing doctor slot
-    const {docId, slotDate, slotTime} = appointmentData
-    const doctorData = await doctorModel.findById(docId)
+    const { docId, slotDate, slotTime } = appointmentData;
+    const doctorData = await doctorModel.findById(docId);
 
-    let slots_booked = doctorData.slots_booked
+    let slots_booked = doctorData.slots_booked;
 
-    slots_booked[slotDate] = slots_booked[slotDate].filter(e => e!== slotTime)
-    await doctorModel.findByIdAndUpdate(docId,{slots_booked})
+    slots_booked[slotDate] = slots_booked[slotDate].filter(
+      (e) => e !== slotTime
+    );
+    await doctorModel.findByIdAndUpdate(docId, { slots_booked });
 
-    res.json({success:true,message:'Appointment cancelled'})
-
+    res.json({ success: true, message: "Appointment cancelled" });
   } catch (error) {
     console.log("Update profile error:", error);
     res.json({ success: false, message: error.message });
-    
   }
-}
+};
 
 // API untuk user bayar dengan upload proof
 const paymentUser = async (req, res) => {
   try {
-    const { appointmentId } = req.body
-    const userId = req.userId
+    const { appointmentId } = req.body;
+    const userId = req.userId;
+
+    // Get uploaded file from multer middleware
+    const imageFile = req.file;
 
     // Cari appointment
-    const appointmentData = await appointmentModel.findById(appointmentId)
+    const appointmentData = await appointmentModel.findById(appointmentId);
 
     if (!appointmentData || appointmentData.cancelled) {
-      return res.json({ success: false, message: "Appointment Cancelled or not found" })
+      return res.json({
+        success: false,
+        message: "Appointment Cancelled or not found",
+      });
     }
 
     // Cek apakah appointment milik user ini
     if (appointmentData.userId !== userId) {
-      return res.json({ success: false, message: "Unauthorized" })
+      return res.json({ success: false, message: "Unauthorized" });
     }
 
     // Cek apakah sudah dibayar
     if (appointmentData.payment) {
-      return res.json({ success: false, message: "Payment already submitted" })
+      return res.json({ success: false, message: "Payment already submitted" });
     }
 
-    // Update payment status ke true (dengan proof jika ada)
-    const updateData = { 
+    let paymentProofURL = null;
+
+    // Upload payment proof jika ada file
+    if (imageFile) {
+      try {
+        console.log("Uploading payment proof:", imageFile.path);
+
+        // Upload ke cloudinary dengan folder yang sesuai
+        const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+          resource_type: "image",
+          folder: "payment_proofs", // Ganti folder ke payment_proofs
+          transformation: [
+            { width: 800, height: 600, crop: "limit", quality: "auto" },
+          ],
+        });
+
+        paymentProofURL = imageUpload.secure_url;
+      } catch (imageError) {
+        console.log("Payment proof upload error:", imageError);
+        return res.json({
+          success: false,
+          message: "Failed to upload payment proof",
+          error: imageError.message,
+        });
+      }
+    }
+
+    // Prepare update data
+    const updateData = {
       payment: true,
-      paymentProof: req.file ? req.file.filename : null // Simpan nama file jika ada
+    };
+
+    // Tambahkan paymentProof URL jika ada
+    if (paymentProofURL) {
+      updateData.paymentProof = paymentProofURL;
     }
 
-    await appointmentModel.findByIdAndUpdate(appointmentId, updateData)
+    // Update appointment dengan payment status dan proof
+    await appointmentModel.findByIdAndUpdate(appointmentId, updateData);
 
     res.json({
       success: true,
-      message: "Payment proof submitted successfully. Waiting for admin verification."
-    })
-
+      message:
+        "Payment proof submitted successfully. Waiting for admin verification.",
+      paymentProof: paymentProofURL,
+    });
   } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: error.message })
+    console.log(error);
+    res.json({ success: false, message: error.message });
   }
-}
+};
 
 export const generateContent = async (req, res) => {
   try {
     const { prompt } = req.body;
-    console.log('Received prompt:', prompt); 
-    
-    const generateAI = await main(prompt + ' Ask to know recommended specialist regarding your health concern.');
-    console.log('Generated AI response:', generateAI); 
-    
-    res.json({ success: true, data: generateAI }); 
-    
+    console.log("Received prompt:", prompt);
+
+    const generateAI = await main(
+      prompt +
+        " Ask to know recommended specialist regarding your health concern."
+    );
+    console.log("Generated AI response:", generateAI);
+
+    res.json({ success: true, data: generateAI });
   } catch (error) {
-    console.error('Controller error:', error);
+    console.error("Controller error:", error);
     res.json({ success: false, message: error.message });
   }
-}
+};
 
-export { registerUser, loginUser, getProfile, updateProfile, bookAppointment,listAppointment, cancelAppointment, paymentUser};
+export {
+  registerUser,
+  loginUser,
+  getProfile,
+  updateProfile,
+  bookAppointment,
+  listAppointment,
+  cancelAppointment,
+  paymentUser,
+};

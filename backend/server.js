@@ -17,6 +17,8 @@ connectCloudinary()
 app.use(express.json())
 app.use(cors())
 
+app.use('/uploads', express.static('uploads'))
+
 // api endpoint
 app.use('/api/admin', adminRouter)
 app.use('/api/doctor',doctorRouter)
