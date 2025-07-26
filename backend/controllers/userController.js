@@ -272,16 +272,45 @@ const cancelAppointment = async (req,res)=>{
   }
 }
 
-
-// midtrans integration for payment
-
-
-// api to verify payment
-const verifyPayment = async (req,res) =>{
+// API untuk user bayar dengan upload proof
+const paymentUser = async (req, res) => {
   try {
-    
+    const { appointmentId } = req.body
+    const userId = req.userId
+
+    // Cari appointment
+    const appointmentData = await appointmentModel.findById(appointmentId)
+
+    if (!appointmentData || appointmentData.cancelled) {
+      return res.json({ success: false, message: "Appointment Cancelled or not found" })
+    }
+
+    // Cek apakah appointment milik user ini
+    if (appointmentData.userId !== userId) {
+      return res.json({ success: false, message: "Unauthorized" })
+    }
+
+    // Cek apakah sudah dibayar
+    if (appointmentData.payment) {
+      return res.json({ success: false, message: "Payment already submitted" })
+    }
+
+    // Update payment status ke true (dengan proof jika ada)
+    const updateData = { 
+      payment: true,
+      paymentProof: req.file ? req.file.filename : null // Simpan nama file jika ada
+    }
+
+    await appointmentModel.findByIdAndUpdate(appointmentId, updateData)
+
+    res.json({
+      success: true,
+      message: "Payment proof submitted successfully. Waiting for admin verification."
+    })
+
   } catch (error) {
-    
+    console.log(error)
+    res.json({ success: false, message: error.message })
   }
 }
 
@@ -301,4 +330,4 @@ export const generateContent = async (req, res) => {
   }
 }
 
-export { registerUser, loginUser, getProfile, updateProfile, bookAppointment,listAppointment, cancelAppointment};
+export { registerUser, loginUser, getProfile, updateProfile, bookAppointment,listAppointment, cancelAppointment, paymentUser};

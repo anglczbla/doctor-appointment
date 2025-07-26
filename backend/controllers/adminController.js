@@ -157,5 +157,79 @@ const adminDashboard = async (req,res) =>{
     }
 }
 
+// API untuk verify payment (Admin only)
+const verifyPayment = async (req, res) => {
+  try {
+    const { appointmentId, verify } = req.body // verify: true/false
 
-export {addDoctor, loginAdmin, allDoctor, appointmentsAdmin, appointmentCancel, adminDashboard}
+    // Cari appointment
+    const appointmentData = await appointmentModel.findById(appointmentId)
+
+    if (!appointmentData) {
+      return res.json({ success: false, message: "Appointment not found" })
+    }
+
+    if (verify) {
+      // Jika di-approve, complete appointment
+      await appointmentModel.findByIdAndUpdate(appointmentId, {
+        payment: true,
+        isCompleted: true
+      })
+      
+      res.json({
+        success: true,
+        message: "Payment verified and appointment completed"
+      })
+      
+    } else {
+      // Jika di-reject, set payment ke false
+      await appointmentModel.findByIdAndUpdate(appointmentId, {
+        payment: false,
+        isCompleted: false
+      })
+      
+      res.json({
+        success: true,
+        message: "Payment rejected"
+      })
+    }
+
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: error.message })
+  }
+}
+
+// API untuk lihat daftar payment yang perlu diverifikasi (Admin)
+const getPendingPayments = async (req, res) => {
+  try {
+    // Cari appointment yang payment=true tapi isCompleted=false
+    const pendingPayments = await appointmentModel.find({
+      payment: true,
+      isCompleted: false,
+      cancelled: false
+    }).sort({ date: -1 }) // Urutkan berdasarkan tanggal terbaru
+
+    const formattedPayments = pendingPayments.map(appointment => ({
+      _id: appointment._id,
+      patientName: appointment.userData.name,
+      doctorName: appointment.docData.name,
+      appointmentDate: appointment.slotDate,
+      appointmentTime: appointment.slotTime,
+      amount: appointment.amount,
+      paymentProof: appointment.paymentProof, // File proof jika ada
+      submittedAt: appointment.updatedAt
+    }))
+
+    res.json({
+      success: true,
+      data: formattedPayments
+    })
+
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: error.message })
+  }
+}
+
+export {addDoctor, loginAdmin, allDoctor, appointmentsAdmin, appointmentCancel, adminDashboard, verifyPayment, getPendingPayments}
